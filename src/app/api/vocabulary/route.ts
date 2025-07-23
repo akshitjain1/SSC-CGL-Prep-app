@@ -4,9 +4,11 @@ import {
   getVocabulary, 
   saveVocabulary, 
   getTodaysVocabulary, 
+  addVocabularyWords,
   generateId,
+  getTodayString,
   type VocabularyWord 
-} from '@/lib/storage'
+} from '@/lib/serverless-storage'
 
 export async function GET() {
   try {
@@ -23,7 +25,7 @@ export async function GET() {
 
     // Generate new vocabulary for today
     const generatedWords = await generateVocabulary(10)
-    const today = new Date().toISOString().split('T')[0]
+    const today = getTodayString()
     
     const vocabularyWords: VocabularyWord[] = generatedWords.map(word => ({
       id: generateId(),
@@ -37,10 +39,8 @@ export async function GET() {
       dateAdded: today
     }))
 
-    // Save to existing vocabulary
-    const allVocabulary = getVocabulary()
-    const updatedVocabulary = [...allVocabulary, ...vocabularyWords]
-    saveVocabulary(updatedVocabulary)
+    // Add to vocabulary storage
+    addVocabularyWords(vocabularyWords)
 
     return NextResponse.json({ 
       success: true, 

@@ -3,9 +3,10 @@ import { evaluatePractice } from '@/lib/geminiClient'
 import { 
   getPracticeSessions, 
   savePracticeSessions, 
+  addPracticeSession,
   generateId,
   type PracticeSession 
-} from '@/lib/storage'
+} from '@/lib/serverless-storage'
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,9 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Save the practice session
-    const allSessions = getPracticeSessions()
-    const updatedSessions = [...allSessions, practiceSession]
-    savePracticeSessions(updatedSessions)
+    addPracticeSession(practiceSession)
 
     return NextResponse.json({ 
       success: true, 

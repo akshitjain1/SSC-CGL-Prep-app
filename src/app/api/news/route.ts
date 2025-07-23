@@ -4,9 +4,11 @@ import {
   getNews, 
   saveNews, 
   getTodaysNews, 
+  addNews,
   generateId,
+  getTodayString,
   type NewsItem 
-} from '@/lib/storage'
+} from '@/lib/serverless-storage'
 
 export async function GET() {
   try {
@@ -84,7 +86,7 @@ export async function GET() {
       ]
     }
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = getTodayString()
     
     const newsItems: NewsItem[] = generatedNews.map((item: any) => ({
       id: generateId(),
@@ -94,10 +96,8 @@ export async function GET() {
       dateAdded: today
     }))
 
-    // Save to existing news
-    const allNews = getNews()
-    const updatedNews = [...allNews, ...newsItems]
-    saveNews(updatedNews)
+    // Add to news storage
+    addNews(newsItems)
 
     return NextResponse.json({ 
       success: true, 

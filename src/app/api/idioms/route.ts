@@ -4,9 +4,11 @@ import {
   getIdioms, 
   saveIdioms, 
   getTodaysIdioms, 
+  addIdioms,
   generateId,
+  getTodayString,
   type Idiom 
-} from '@/lib/storage'
+} from '@/lib/serverless-storage'
 
 export async function GET() {
   try {
@@ -23,7 +25,7 @@ export async function GET() {
 
     // Generate new idioms for today
     const generatedIdioms = await generateIdioms(5)
-    const today = new Date().toISOString().split('T')[0]
+    const today = getTodayString()
     
     const idioms: Idiom[] = generatedIdioms.map(idiom => ({
       id: generateId(),
@@ -35,10 +37,8 @@ export async function GET() {
       dateAdded: today
     }))
 
-    // Save to existing idioms
-    const allIdioms = getIdioms()
-    const updatedIdioms = [...allIdioms, ...idioms]
-    saveIdioms(updatedIdioms)
+    // Add to idioms storage
+    addIdioms(idioms)
 
     return NextResponse.json({ 
       success: true, 
