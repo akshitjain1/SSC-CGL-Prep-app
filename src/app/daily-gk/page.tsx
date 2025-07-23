@@ -74,8 +74,8 @@ export default function DailyGKPage() {
       }
       
       const data = await response.json()
-      setFacts(data.facts || [])
-      setLearnedCount(data.facts?.filter((fact: GKFact) => fact.learned).length || 0)
+      setFacts(data.data || [])
+      setLearnedCount(data.data?.filter((fact: GKFact) => fact.learned).length || 0)
     } catch (error) {
       console.error('Error loading daily GK:', error)
       setError('Failed to load today\'s GK facts. Please try again.')
